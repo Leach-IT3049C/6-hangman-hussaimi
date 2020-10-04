@@ -30,13 +30,19 @@ class Hangman {
    * @param {string} difficulty a difficulty string to be passed to the getRandomWord Function
    * @param {function} next callback function to be called after a word is reveived from the API.
    */
-  start(difficulty, next) {
+  start(difficulty) {
     // get word and set it to the class's this.word
     // clear canvas
     // draw base
     // reset this.guesses to empty array
     // reset this.isOver to false
     // reset this.didWin to false
+    this.word = this.getRandomWord(difficulty);
+    this.clearCanvas();
+    this.drawBase();
+    this.isOver = false;
+    this.didWin = false;
+    return;
   }
 
   /**
