@@ -3,7 +3,8 @@ class Hangman {
     if (!_canvas) {
       throw new Error(`invalid canvas provided`);
     }
-
+    this.gameCounter = 0;
+    this.guesses = new Array();
     this.canvas = _canvas;
     this.ctx = this.canvas.getContext(`2d`);
   }
@@ -17,12 +18,21 @@ class Hangman {
    * The results is a json object that looks like this:
    *    { word: "book" }
    * */
-  getRandomWord(difficulty) {
-    return fetch(
-      `https://hangman-micro-service-bpblrjerwh.now.sh?difficulty=${difficulty}`
-    )
-      .then((r) => r.json())
-      .then((r) => r.word);
+   async getRandomWord(difficulty) {
+    // return await fetch(
+    //   `https://hangman-micro-service.herokuapp.com/?difficulty=${difficulty}`
+    // )
+    //   .then(r => r.json())
+    //   .then(r => r.word);
+    try {
+      const request = await fetch(`https://hangman-micro-service.herokuapp.com/?difficulty=${difficulty}`);
+      const response = await request.json();
+      return response.word;
+    } 
+    catch{
+      console.error(error);
+      alert(error);
+    }
   }
 
   /**
@@ -30,14 +40,15 @@ class Hangman {
    * @param {string} difficulty a difficulty string to be passed to the getRandomWord Function
    * @param {function} next callback function to be called after a word is reveived from the API.
    */
-  start(difficulty) {
+  async start(difficulty) {
     // get word and set it to the class's this.word
     // clear canvas
     // draw base
     // reset this.guesses to empty array
     // reset this.isOver to false
     // reset this.didWin to false
-    this.word = this.getRandomWord(difficulty);
+    const randomWord = await this.getRandomWord(difficulty);
+    this.word = randomWord;
     this.clearCanvas();
     this.drawBase();
     this.isOver = false;
@@ -59,11 +70,42 @@ class Hangman {
     // check if the word includes the guessed letter:
     //    if it's is call checkWin()
     //    if it's not call onWrongGuess()
+    var checkCase = /^[A-Za-z]+$/;
+    try{
+      if(letter.length == 0){
+        throw new Error("Please provide a letter.");
+      } else if (!(letter.match(checkCase))){
+        throw new Error("Guess should be a letter.");
+      } else if (letter.length > 1){
+        throw new Error("Please provide one letter.");
+      } else {
+        letter = letter.toLowerCase();
+        if(this.guesses.includes(letter)){
+          throw new Error ("Letter already exists, please provide a new one.");
+        } else {
+          this.guesses.push(letter);
+        }
+        if(this.word.includes(letter)){
+          this.checkWin();
+        } else{
+          this.onWrongGuess();
+        }
+      }
+    }
+    catch (error){
+      console.error(error);
+      alert(error);
+    }
   }
 
   checkWin() {
     // using the word and the guesses array, figure out how many remaining unknowns.
     // if zero, set both didWin, and isOver to true
+    const guessedWord = this.getWordHolderText();
+    if(guessedWord === this.word){
+      this.didWin = true;
+      this.isOver = true;
+    }
   }
 
   /**
@@ -71,7 +113,25 @@ class Hangman {
    * drawHead, drawBody, drawRightArm, drawLeftArm, drawRightLeg, or drawLeftLeg.
    * if the number wrong guesses is 6, then also set isOver to true and didWin to false.
    */
-  onWrongGuess() {}
+  onWrongGuess() {
+    
+    this.gameCounter++;       
+    if(this.gameCounter == 1){
+      this.drawHead();
+    } else if(this.gameCounter == 2){
+      this.drawBase();
+    } else if (this.gameCounter == 3){
+      this.drawRightArm();
+    } else if(this.gameCounter == 4){
+      this.drawLeftArm();
+    } else if(this.gameCounter == 5){
+      this.drawRightLeg();
+    } else if (this.gameCounter == 6){
+      this.drawLeftLeg();
+      this.isOver = true;
+      this.didWin = false;
+    }
+  }
 
   /**
    * This function will return a string of the word placeholder
@@ -79,7 +139,28 @@ class Hangman {
    * i.e.: if the word is BOOK, and the letter O has been guessed, this would return _ O O _
    */
   getWordHolderText() {
-    return;
+    //this.word = "apple";
+
+    // for (let i = 0; i < this.word.length; i++){
+    //   if(i < this.guesses.length && this.word[i] == this.guesses[this.guesses.length -1]){
+    //     this.wordHolder += this.word[i];
+    //   }
+    //   else{
+    //     this.wordHolder += "_";
+    //   }
+    // }
+    let wordHolder = "";
+    for (let i = 0; i < this.guesses.length; i++){
+      for(let j = 0; j < this.word.length; j++){
+        if(this.word[j] == this.guesses[i]){
+          wordHolder += this.word[j];
+        }
+        else{
+          wordHolder += "_";
+        }
+      }
+    }
+    return wordHolder;
   }
 
   /**
@@ -89,7 +170,9 @@ class Hangman {
    * Hint: use the Array.prototype.join method.
    */
   getGuessesText() {
-    return ``;
+    const guesses = this.guesses.join(', ');
+    const returnValue = "(Guesses: " + guesses + " )";
+    return returnValue;
   }
 
   /**

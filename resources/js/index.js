@@ -11,6 +11,7 @@ let wordHolderText = document.getElementById(`wordHolder`);
 // GUESSING FORM
 let guessForm = document.getElementById(`guessForm`);
 let guessInput = document.getElementById(`guessInput`);
+let guessSubmitButton = document.getElementById('guessSubmitButton');
 
 // GAME RESET BUTTON
 let resetGame = document.getElementById(`resetGame`);
@@ -34,12 +35,12 @@ try {
   difficultySelectForm.addEventListener("submit", function (event) {
     event.preventDefault();
     difficultySelect = document.getElementById(`difficulty`);
-    game.start(difficultySelect.value);
-    startWrapper.hidden = true;
-    gameWrapper.style.display = "block";
-    wordHolderText.innerHTML = game.getWordHolderText();
-    guessesText.innerHTML = game.getGuessesText();
-    
+    game.start(difficultySelect.value).then(()=>{
+      startWrapper.style.display = "none";
+      gameWrapper.style.display = "block";
+      wordHolderText.innerHTML = game.getWordHolderText();
+      guessesText.innerHTML = game.getGuessesText();
+    }); 
   });
 
   
@@ -58,12 +59,38 @@ try {
   //      2. disable the guessButton
   //      3. show the resetGame button
   // if the game is won or lost, show an alert.
-  guessForm.addEventListener(`submit`, function (e) {});
+  guessForm.addEventListener(`submit`, function (e) {
+    e.preventDefault();
+    guessInput = document.getElementById(`guessInput`);
+    game.guess(guessInput.value);
+    wordHolderText.innerHTML = game.getWordHolderText();
+    guessesText.innerHTML = game.getGuessesText();
+    guessInput.value = "";
+    if(game.isOver == true){
+      guessSubmitButton.disabled = true;
+      guessInput.disabled = true;
+      resetGame.style.display = "block";
+      if(game.didWin == true){
+        alert("Congratulations! You won.");
+      } else{
+        alert("Game Lost.");
+      }
+    }
+  });
 
   // add a click Event Listener to the resetGame button
   //    show the startWrapper
   //    hide the gameWrapper
-  resetGame.addEventListener(`click`, function (e) {});
+  resetGame.addEventListener(`click`, function (e) {
+    gameWrapper.style.display = "none";
+    startWrapper.style.display = "block";
+    game.guesses = [];
+    guessInput.disabled = false;
+    guessSubmitButton.disabled = false;
+    wordHolderText.innerHTML = "";
+    guessesText.innerHTML = "";
+    resetGame.style.display = "none";
+  });
 } catch (error) {
   console.error(error);
   alert(error);
