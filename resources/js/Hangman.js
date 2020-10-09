@@ -3,6 +3,7 @@ class Hangman {
     if (!_canvas) {
       throw new Error(`invalid canvas provided`);
     }
+    this.finalWord = "";
     this.gameCounter = 0;
     this.guesses = new Array();
     this.canvas = _canvas;
@@ -119,15 +120,15 @@ class Hangman {
     if(this.gameCounter == 1){
       this.drawHead();
     } else if(this.gameCounter == 2){
-      this.drawBase();
+      this.drawBody();
     } else if (this.gameCounter == 3){
-      this.drawRightArm();
-    } else if(this.gameCounter == 4){
       this.drawLeftArm();
+    } else if(this.gameCounter == 4){
+      this.drawRightArm();
     } else if(this.gameCounter == 5){
-      this.drawRightLeg();
-    } else if (this.gameCounter == 6){
       this.drawLeftLeg();
+    } else if (this.gameCounter == 6){
+      this.drawRightLeg();
       this.isOver = true;
       this.didWin = false;
     }
@@ -140,27 +141,38 @@ class Hangman {
    */
   getWordHolderText() {
     //this.word = "apple";
-
-    // for (let i = 0; i < this.word.length; i++){
-    //   if(i < this.guesses.length && this.word[i] == this.guesses[this.guesses.length -1]){
-    //     this.wordHolder += this.word[i];
-    //   }
-    //   else{
-    //     this.wordHolder += "_";
-    //   }
-    // }
     let wordHolder = "";
-    for (let i = 0; i < this.guesses.length; i++){
-      for(let j = 0; j < this.word.length; j++){
-        if(this.word[j] == this.guesses[i]){
-          wordHolder += this.word[j];
-        }
-        else{
-          wordHolder += "_";
-        }
+    for (let i = 0; i < this.word.length; i++){
+      if(this.word[i] == this.guesses[this.guesses.length -1]){
+        wordHolder += this.word[i];
+      }
+      else{
+        wordHolder += "_";
       }
     }
+    // let checkCase = wordHolder.split('');
+    // let counter = 0;
+    // while(counter<this.word.length){
+    //   if(this.finalWord[counter]!="_" && this.finalWord[counter] == null){
+    //     this.finalWord[counter] = checkCase[counter];
+    //     counter++;
+    //   } else {
+    //     counter++;
+    //   }
+    // }
     return wordHolder;
+    // let wordHolder = "";
+    // for (let i = 0; i < this.word.length; i++){
+    //   for(let j = 0; j < this.guesses.length; j++){
+    //     if(this.word[i] == this.guesses[j]){
+    //       wordHolder += this.word[i];
+    //     }
+    //     else{
+    //       wordHolder += "_";
+    //     }
+    //   }
+    // }
+    // return wordHolder;
   }
 
   /**
@@ -192,15 +204,46 @@ class Hangman {
     this.ctx.fillRect(10, 410, 175, 10); // Base
   }
 
-  drawHead() {}
+  drawHead() {
+    //var ctx = canvas.getContext("2d");
+    this.ctx.beginPath();
+    this.ctx.arc(250, 100, 40, 0, 2 * Math.PI);
+    this.ctx.stroke();
+  }
 
-  drawBody() {}
+  drawBody() {
+    //var ctx = canvas.getContext("2d");
+    this.ctx.beginPath();
+    this.ctx.moveTo(250, 140);
+    this.ctx.lineTo(250, 270);
+    this.ctx.stroke();
+  }
 
-  drawLeftArm() {}
+  drawLeftArm() {
+    this.ctx.beginPath();
+    this.ctx.moveTo(250, 140);
+    this.ctx.lineTo(170, 200);
+    this.ctx.stroke();
+  }
 
-  drawRightArm() {}
+  drawRightArm() {
+    this.ctx.beginPath();
+    this.ctx.moveTo(250, 140);
+    this.ctx.lineTo(340, 200);
+    this.ctx.stroke();
+  }
 
-  drawLeftLeg() {}
+  drawLeftLeg() {
+    this.ctx.beginPath();
+    this.ctx.moveTo(250, 270);
+    this.ctx.lineTo(170, 390);
+    this.ctx.stroke();
+  }
 
-  drawRightLeg() {}
+  drawRightLeg() {
+    this.ctx.beginPath();
+    this.ctx.moveTo(250, 270);
+    this.ctx.lineTo(320, 390);
+    this.ctx.stroke();
+  }
 }

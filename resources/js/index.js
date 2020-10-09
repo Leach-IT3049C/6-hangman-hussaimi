@@ -90,6 +90,7 @@ try {
     wordHolderText.innerHTML = "";
     guessesText.innerHTML = "";
     resetGame.style.display = "none";
+    game.gameCounter = 0;
   });
 } catch (error) {
   console.error(error);
