@@ -85,12 +85,14 @@ try {
     gameWrapper.style.display = "none";
     startWrapper.style.display = "block";
     game.guesses = [];
+    game.previousGuessedWord = [];
     guessInput.disabled = false;
     guessSubmitButton.disabled = false;
     wordHolderText.innerHTML = "";
     guessesText.innerHTML = "";
     resetGame.style.display = "none";
     game.gameCounter = 0;
+    game.wordHolderCounter = 0;
   });
 } catch (error) {
   console.error(error);

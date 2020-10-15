@@ -4,7 +4,9 @@ class Hangman {
       throw new Error(`invalid canvas provided`);
     }
     this.finalWord = "";
+    this.wordHolderCounter = 0;
     this.gameCounter = 0;
+    this.previousGuessedWord = new Array();
     this.guesses = new Array();
     this.canvas = _canvas;
     this.ctx = this.canvas.getContext(`2d`);
@@ -94,7 +96,7 @@ class Hangman {
       }
     }
     catch (error){
-      console.error(error);
+      // console.error(error);
       alert(error);
     }
   }
@@ -140,8 +142,9 @@ class Hangman {
    * i.e.: if the word is BOOK, and the letter O has been guessed, this would return _ O O _
    */
   getWordHolderText() {
-    //this.word = "apple";
+    
     let wordHolder = "";
+    var checkCase = /^[A-Za-z]+$/;
     for (let i = 0; i < this.word.length; i++){
       if(this.word[i] == this.guesses[this.guesses.length -1]){
         wordHolder += this.word[i];
@@ -150,29 +153,23 @@ class Hangman {
         wordHolder += "_";
       }
     }
-    // let checkCase = wordHolder.split('');
-    // let counter = 0;
-    // while(counter<this.word.length){
-    //   if(this.finalWord[counter]!="_" && this.finalWord[counter] == null){
-    //     this.finalWord[counter] = checkCase[counter];
-    //     counter++;
-    //   } else {
-    //     counter++;
-    //   }
-    // }
-    return wordHolder;
-    // let wordHolder = "";
-    // for (let i = 0; i < this.word.length; i++){
-    //   for(let j = 0; j < this.guesses.length; j++){
-    //     if(this.word[i] == this.guesses[j]){
-    //       wordHolder += this.word[i];
-    //     }
-    //     else{
-    //       wordHolder += "_";
-    //     }
-    //   }
-    // }
-    // return wordHolder;
+
+    if(this.wordHolderCounter == 0){
+      this.previousGuessedWord.push(wordHolder);
+      this.wordHolderCounter++;
+    }
+
+    let previousGuessed = this.previousGuessedWord[this.previousGuessedWord.length - 1].split("");
+    let i = 0;
+    while(i < this.word.length){
+      if(previousGuessed[i] == "_" && wordHolder[i].match(checkCase)){
+        previousGuessed[i] = wordHolder[i];
+      }
+      i++;
+    }
+    this.previousGuessedWord[this.previousGuessedWord.length - 1] = previousGuessed.join("");
+    return previousGuessed.join("");
+
   }
 
   /**
@@ -247,3 +244,29 @@ class Hangman {
     this.ctx.stroke();
   }
 }
+
+
+
+// let checkCase = wordHolder.split('');
+    // let counter = 0;
+    // while(counter<this.word.length){
+    //   if(this.finalWord[counter]!="_" && this.finalWord[counter] == null){
+    //     this.finalWord[counter] = checkCase[counter];
+    //     counter++;
+    //   } else {
+    //     counter++;
+    //   }
+    // }
+
+        // let wordHolder = "";
+    // for (let i = 0; i < this.word.length; i++){
+    //   for(let j = 0; j < this.guesses.length; j++){
+    //     if(this.word[i] == this.guesses[j]){
+    //       wordHolder += this.word[i];
+    //     }
+    //     else{
+    //       wordHolder += "_";
+    //     }
+    //   }
+    // }
+    // return wordHolder;
