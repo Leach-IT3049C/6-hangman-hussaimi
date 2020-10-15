@@ -244,29 +244,3 @@ class Hangman {
     this.ctx.stroke();
   }
 }
-
-
-
-// let checkCase = wordHolder.split('');
-    // let counter = 0;
-    // while(counter<this.word.length){
-    //   if(this.finalWord[counter]!="_" && this.finalWord[counter] == null){
-    //     this.finalWord[counter] = checkCase[counter];
-    //     counter++;
-    //   } else {
-    //     counter++;
-    //   }
-    // }
-
-        // let wordHolder = "";
-    // for (let i = 0; i < this.word.length; i++){
-    //   for(let j = 0; j < this.guesses.length; j++){
-    //     if(this.word[i] == this.guesses[j]){
-    //       wordHolder += this.word[i];
-    //     }
-    //     else{
-    //       wordHolder += "_";
-    //     }
-    //   }
-    // }
-    // return wordHolder;
